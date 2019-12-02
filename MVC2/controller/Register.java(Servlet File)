@@ -1,0 +1,36 @@
+package controller;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import model.Model;
+
+public class Register extends HttpServlet {
+	
+	public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+		Model modle=new Model();
+		modle.setName(request.getParameter("name"));
+		String age2=(request.getParameter("age"));
+		Integer age=Integer.parseInt(age2);
+		modle.setAge(age);
+		modle.setGender(request.getParameter("gender"));
+		modle.setUser(request.getParameter("user"));
+		modle.setPwd(request.getParameter("pwd"));	
+		
+			boolean value=modle.register();
+			if(value)
+				response.sendRedirect("/MVC2/success.html");
+			else
+				response.sendRedirect("/MVC2/failure.html");
+		} catch (Exception e) {
+			response.sendRedirect("/MVC2/failure.html");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
