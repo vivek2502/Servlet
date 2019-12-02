@@ -1,0 +1,104 @@
+package model;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import oracle.jdbc.driver.OracleDriver;
+
+public class Model 
+{
+	private String url="jdbc:oracle:thin:@//localhost:1521/XE";
+	private String userid="JAVAPROJECT";
+	private String password="ORACLE";
+	private String sql="INSERT INTO LION VALUES(?,?,?,?,?)";
+	private String select="SELECT * FROM LION WHERE USER_ID=? AND PWD=?";
+	
+	private Connection con=null;
+	private PreparedStatement pstmt=null;
+	private ResultSet res;
+	
+	private String name;
+	private int age;
+	private String gender;
+	private String user;
+	private String pwd;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getAge() {
+		return age;
+	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+	public String getUser() {
+		return user;
+	}
+	public void setUser(String user) {
+		this.user = user;
+	}
+	public String getPwd() {
+		return pwd;
+	}
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+	public Model()
+	{
+		try
+		{
+			DriverManager.registerDriver(new OracleDriver());
+			con=DriverManager.getConnection(url,userid,password);
+		}
+		catch(SQLException e)
+		{
+			System.out.println("Error occur");
+			e.printStackTrace();
+		}
+	}
+	public boolean register() throws Exception
+	{
+			pstmt=con.prepareStatement(sql);
+			pstmt.setString(1,name);
+			pstmt.setInt(2,age);
+			pstmt.setString(3,gender);
+			pstmt.setString(4,user);
+			pstmt.setString(5,pwd);
+			int row=pstmt.executeUpdate();
+			if(row!=0)
+				return true;
+			else 
+				return false;
+	}
+	public boolean login() throws Exception
+	{
+		pstmt=con.prepareStatement(select);
+		pstmt.setString(1,user);
+		pstmt.setString(2,pwd);
+		res=pstmt.executeQuery();
+			if(res.next()==true)
+			{
+				name=res.getString(1);
+				age=res.getInt(2);
+				gender=res.getString(3);
+				return true;
+			}
+			else 
+			{
+				return false;
+			}
+	}
+}
